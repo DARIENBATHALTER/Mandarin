@@ -91,7 +91,3 @@ Attribution is displayed in-app and required by the OSM licence.
 ## License
 
 Code: MIT. See [LICENSE](LICENSE). World data derived from OpenStreetMap remains ODbL.
-
-## Hop.Earth
-
-This pipeline is the open-source engine behind [Hop.Earth](https://hop.earth), where the same method runs for places beyond Mandarin.
