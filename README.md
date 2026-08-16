@@ -26,7 +26,7 @@ Built with Claude writing the code. The box, the feel, and every tuning call are
 ## Quick start
 
 ```bash
-git clone <this repo> Mandarin && cd Mandarin
+git clone https://github.com/DARIENBATHALTER/Mandarin.git Mandarin && cd Mandarin
 cd tools
 python3 fetch.py            # DEM + imagery + OSM, ~2 min, idempotent
 python3 build_world.py      # meshes -> web/world/, ~3 s
