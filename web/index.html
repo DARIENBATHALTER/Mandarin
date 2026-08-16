@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mandarin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+  :root { color-scheme: dark; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: #0a0d10; }
+  body { font: 500 13px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color: #dfe7ee; }
+  canvas { display: block; }
+
+  #boot {
+    position: fixed; inset: 0; display: grid; place-content: center; gap: 14px;
+    background: #0a0d10; z-index: 20; text-align: center; transition: opacity .5s;
+  }
+  #boot h1 { font-size: 34px; letter-spacing: .34em; font-weight: 600; color: #cfe3a8; }
+  #boot .sub { color: #6b7a86; letter-spacing: .12em; font-size: 11px; }
+  #bar { width: 320px; height: 2px; background: #1b2228; overflow: hidden; }
+  #bar i { display: block; height: 100%; width: 0; background: #a8cc55; transition: width .25s; }
+  #boot.gone { opacity: 0; pointer-events: none; }
+
+  #hud { position: fixed; left: 18px; bottom: 16px; z-index: 10; pointer-events: none; }
+  #speed { font-size: 46px; font-weight: 700; letter-spacing: -.02em; line-height: 1; color: #e8f0d6; }
+  #speed span { font-size: 12px; font-weight: 500; letter-spacing: .18em; color: #7d8b96; margin-left: 6px; }
+  #street {
+    position: fixed; left: 18px; top: 16px; z-index: 10; pointer-events: none;
+    font-size: 15px; letter-spacing: .06em; color: #cfe3a8;
+    text-shadow: 0 1px 6px rgba(0,0,0,.85); transition: opacity .35s; opacity: 0;
+  }
+  #street.on { opacity: 1; }
+  #carname {
+    position: fixed; left: 18px; top: 40px; z-index: 10; pointer-events: none;
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: #8fa06b; opacity: 0; transition: opacity .3s;
+    text-shadow: 0 1px 6px rgba(0,0,0,.85);
+  }
+  #carname.on { opacity: 1; }
+
+  #keys {
+    position: fixed; right: 18px; bottom: 16px; z-index: 10; text-align: right;
+    color: #6b7a86; font-size: 11px; line-height: 1.7; pointer-events: none;
+  }
+  #keys b { color: #a8cc55; font-weight: 600; }
+  #credit {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 8px; z-index: 10;
+    text-align: center; color: #47525b; font-size: 9px; line-height: 1.5;
+    pointer-events: none; max-width: 78ch;
+  }
+
+  #minimap {
+    position: fixed; right: 18px; top: 16px; z-index: 11;
+    width: 208px; height: 208px; border-radius: 7px;
+    border: 1px solid rgba(232,240,214,.22);
+    box-shadow: 0 6px 22px rgba(0,0,0,.55); cursor: pointer;
+    background: #0b0f12;
+  }
+  #minimap:hover { border-color: rgba(168,204,85,.75); }
+  #maphint {
+    position: fixed; right: 18px; top: 230px; z-index: 11; width: 208px;
+    text-align: center; color: #6b7a86; font-size: 10px; letter-spacing: .08em;
+    pointer-events: none;
+  }
+  #maphint b { color: #a8cc55; font-weight: 600; }
+
+  #mapoverlay {
+    position: fixed; inset: 0; z-index: 40; display: none;
+    background: rgba(6,9,12,.9); place-content: center; justify-items: center;
+    gap: 12px; padding: 20px;
+  }
+  #mapoverlay.on { display: grid; }
+  #fullmap { border: 1px solid rgba(232,240,214,.2); border-radius: 8px; cursor: crosshair; }
+  #maptitle { color: #cfe3a8; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+  #mapsub { color: #6b7a86; font-size: 11px; letter-spacing: .06em; }
+  #err {
+    position: fixed; inset: auto 20px 20px 20px; z-index: 30; padding: 12px 14px;
+    background: #2a1416; border-left: 3px solid #d9534f; color: #f0c8c8;
+    font-size: 12px; white-space: pre-wrap; display: none; max-height: 40vh; overflow: auto;
+  }
+</style>
+</head>
+<body>
+<div id="boot">
+  <h1>MANDARIN</h1>
+  <div class="sub">JACKSONVILLE, FL &middot; 5 KM SQUARE</div>
+  <div id="bar"><i></i></div>
+  <div class="sub" id="bootmsg">starting</div>
+</div>
+
+<div id="street"></div>
+<div id="carname"></div>
+<div id="hud"><div id="speed">0<span>KM/H</span></div></div>
+<canvas id="minimap" width="208" height="208" title="Open the map (M)"></canvas>
+<div id="maphint"><b>M</b> map &middot; click to start there</div>
+
+<div id="mapoverlay">
+  <div id="maptitle">Mandarin</div>
+  <canvas id="fullmap" width="800" height="800"></canvas>
+  <div id="mapsub">click anywhere to start driving there &middot; ESC or M to close</div>
+</div>
+
+<div id="keys">
+  <b>W S</b> throttle / brake &nbsp; <b>A D</b> steer<br>
+  <b>SPACE</b> handbrake &nbsp; <b>SHIFT</b> boost<br>
+  <b>R</b> reset &nbsp; <b>C</b> camera &nbsp; <b>M</b> map &nbsp; <b>V</b> vehicle
+</div>
+<div id="credit"></div>
+<div id="err"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./node_modules/three/build/three.module.js",
+    "three/addons/": "./node_modules/three/examples/jsm/",
+    "rapier": "./node_modules/@dimforge/rapier3d-compat/rapier.mjs"
+  }
+}
+</script>
+<script type="module">
+  import { start } from "./src/main.js";
+  start().catch((e) => {
+    console.error(e);
+    const el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = (e && e.stack) || String(e);
+    document.getElementById("boot").classList.add("gone");
+  });
+</script>
+</body>
+</html>

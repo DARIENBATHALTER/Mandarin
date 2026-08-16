@@ -1,0 +1,55 @@
+{
+  "name": "Mandarin",
+  "description": "Drivable slice of Mandarin, Jacksonville FL. San Jose Blvd spine, I-295 across the north, St. Johns River on the west edge.",
+  "origin": {
+    "lat": 30.157,
+    "lon": -81.632
+  },
+  "extent_m": 5000,
+  "chunks": 10,
+  "chunk_m": 500,
+  "terrain": {
+    "dem_px": 2560,
+    "verts_per_chunk": 64,
+    "nodata_fill_m": 0.0,
+    "valid_range_m": [
+      -50,
+      200
+    ]
+  },
+  "imagery": {
+    "tile_px": 1024,
+    "jpeg_quality": 88,
+    "naip_items": [
+      "fl_m_3008151_se_17_030_20230206_20230530",
+      "fl_m_3008152_sw_17_030_20230206_20230530"
+    ]
+  },
+  "roads": {
+    "resample_m": 3.0,
+    "default_lane_m": 3.7,
+    "smooth_window_m": 90.0,
+    "lift_m": 0.06,
+    "widths": {
+      "motorway": 14.6,
+      "motorway_link": 7.3,
+      "trunk": 14.6,
+      "trunk_link": 7.3,
+      "primary": 11.0,
+      "primary_link": 5.5,
+      "secondary": 9.2,
+      "secondary_link": 5.5,
+      "tertiary": 7.4,
+      "residential": 6.5,
+      "unclassified": 6.0,
+      "service": 4.5,
+      "living_street": 5.0
+    }
+  },
+  "attribution": [
+    "Road and building data \u00a9 OpenStreetMap contributors (ODbL)",
+    "Imagery: USDA NAIP 2023 (public domain), via Microsoft Planetary Computer",
+    "Elevation: USGS 3DEP bare-earth DEM (public domain)",
+    "Vehicles: Kenney Car Kit (CC0) \u00b7 kenney.nl"
+  ]
+}
